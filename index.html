@@ -11,16 +11,19 @@
 <body>
     <main>
         <section class="search-bar">
-            <p>Today's weather for</p>
-            <input placeholder="New York, NY"></input>
+            <p class="search-bar__title">TODAY'S WEATHER FOR</p>
+            <div class="search-bar__search">
+                <img class="search-bar__magnifying-glass" src="images/magnifying-glass.png" />
+                <input class="search-bar__input" placeholder="New York, NY"></input>
+            </div>
         </section>
         <section class="current-weather">
             <div class="current-weather__info-and-temp-scale">
                 <p class="current-weather__info">New York, NY 10013 as of 10:59 AM EST</p>
                 <div class="current-weather__scale">
-                    <label class="switch">
+                    <label class="current-weather__scale-switch">
                         <input type="checkbox" checked>
-                        <span class="slider round"></span>
+                        <span class="current-weather__scale-slider"></span>
                     </label>
                     <p>Fahrenheit</p>
                 </div>
