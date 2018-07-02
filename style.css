@@ -99,9 +99,6 @@ main {
 
 .current-weather__high-low-bar {
     width: 100%;
-}
-.current-weather__high-low-bar {
-    margin: 0 auto;
     margin: 0px 4px;
 }
 .current-weather__high {
@@ -114,6 +111,15 @@ main {
     float: right;
     width: 100px;
 }
+
+.current-weather__scale {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 130px;
+}
+
 .current-weather__scale-switch {
     position: relative;
     display: inline-block;
@@ -168,6 +174,7 @@ input:checked + .current-weather__scale-slider:before {
     .current-weather__scale {
         text-align: right;
         grid-column: 3/4;
+        display: inline-block;
     }
 }
 
