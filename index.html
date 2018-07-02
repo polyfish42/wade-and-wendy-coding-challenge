@@ -9,10 +9,40 @@
 </head>
 <body>
     <main>
-        <section class="weather__search-bar"></section>
-        <section class="weather__current"></section>
-        <section class="weather__forecast"></section>
-        <section class="weather__stats"></section>
+        <section class="search-bar">
+            <p>Today's weather for</p>
+            <input placeholder="New York, NY"></input>
+        </section>
+        <section class="current-weather">
+            <div class="current-weather__info-and-temp-scale">
+                <p class="current-weather__info">New York, NY 10013 as of 10:59 AM EST</p>
+                <div class="current-weather__temp-scale"></div>
+            </div>
+            <h1>76&#176;</h1>
+            <div class="current-weather_high-low">
+                <class="current-weather_high">High 82&#176;</class>
+                <span>|</span>
+                <class="current-weather_high">Low 57&#176;</class>
+            </div>
+        </section>
+        <section class="forecast">
+            <p>Hourly</p>
+            <p>3 Day</p>
+        </section>
+        <section class="weather-stats">
+            <dl class="weather-stats__stats">
+                <dt class="weather-stats__definition">Sunrise</dt>
+                <dd class="weather-stats__description">5:35 AM</dd>
+                <dt class="weather-stats__definition">Sunset</dt>
+                <dd class="weather-stats__description">8:25 AM</dd>
+                <dt class="weather-stats__definition">Pressure</dt>
+                <dd class="weather-stats__description">29.95"</dd>
+                <dt class="weather-stats__definition">Visibility</dt>
+                <dd class="weather-stats__description">10.2 Miles</dd>
+                <dt class="weather-stats__definition">Rainfall</dt>
+                <dd class="weather-stats__description">0.00"</dd>
+            </dl>
+        </section>
     </main>
 </body>
 </html>
