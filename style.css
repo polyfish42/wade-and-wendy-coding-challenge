@@ -5,7 +5,7 @@ body {
 
 /* Layout */
 main {
-    max-width: 550px;
+    max-width: 500px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr;
@@ -46,6 +46,102 @@ main {
 }
 
 /* Current Weather */
+.current-weather {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.current-weather__info-and-temp-scale {
+    margin: 10px 0px 0px 0px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 25px 25px;
+}
+
+.current-weather__high-low-bar {
+    width: 100%;
+}
+.current-weather__high-low-bar {
+    margin: 0 auto;
+    margin: 0px 4px;
+}
+.current-weather__high {
+    float: left;
+    width: 100px;
+    text-align: right;
+}
+
+.current-weather__low {
+    float: right;
+    width: 100px;
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 35px;
+    height: 20px;
+}
+
+.switch input {display:none;}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    border-radius: 20px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    border-radius: 20px;
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+}
+
+@media (min-width: 500px) {
+    .current-weather__info-and-temp-scale {
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 50px;
+    }
+
+    .current-weather__scale {
+        text-align: right;
+        grid-column: 3/4;
+    }
+}
+
+
+.current-weather__temperature {
+    font-size: 100px;
+}
+
+.current-weather_high-low {
+    color: rgb(187,187,187);
+    margin: auto 0px 20px 0px;
+}
 
 /* Forecast */
 .forecast {
