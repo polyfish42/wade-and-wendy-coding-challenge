@@ -24,7 +24,8 @@ const model = {
   rainfall: null,
   scale: initScale(),
   location: 'New York',
-  searchInput: ''
+  searchInput: '',
+  forecastList: []
 }
 
 const update = function updateModel (model, newModel) {
@@ -122,6 +123,23 @@ const updateNode = function updateNodeData (selector, cb) {
   node.innerHTML = cb(model[selector])
 }
 
+const updateForecast = function updateForecastNode () {
+  const ul = document.getElementById('carousel')
+  while (ul.firstChild) {
+    ul.removeChild(ul.firstChild)
+  }
+
+  model.forecastList.forEach(forecast => {
+    const li = document.createElement('li')
+    // const img = document.createElement('img')
+    const p = document.createElement('p')
+
+    li.innerText = forecast.dateTime
+    li.appendChild(p)
+    ul.appendChild(li)
+  })
+}
+
 const render = function renderView () {
   updateNode('currentTemp', formatTemp)
   updateNode('tempMax', high)
@@ -131,6 +149,58 @@ const render = function renderView () {
   updateNode('pressure', pressure)
   updateNode('visibility', visibility)
   updateNode('rainfall', rainfall)
+  updateForecast()
+}
+// Async
+const accessRainfall = function getRainfallFromData (data) {
+  if (data.rain === undefined) {
+    return null
+  }
+
+  return data.rain['3h']
+}
+
+const getWeather = function fetchCurrentWeather (location = 'New York') {
+  const apiKey = 'a97c5e64fc8af7d636f382583d6e14bd'
+
+  const weatherPromise = window.fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`)
+    .then(res => res.json())
+    .then(json => updateModelWeather(json))
+    .catch(error => console.log(error))
+
+  const forecastPromise = window.fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${apiKey}`)
+    .then(res => res.json())
+    .then(json => updateModelForecast(json))
+    .catch(error => console.log(error))
+
+  Promise.all([weatherPromise, forecastPromise]).then(() => render())
+}
+
+const updateModelWeather = function updateModelWeatherFromJson (json) {
+  const newModel = { currentTemp: json.main.temp,
+    tempMin: json.main.temp_min,
+    tempMax: json.main.temp_max,
+    sunrise: json.sys.sunrise,
+    sunset: json.sys.sunset,
+    pressure: json.main.pressure,
+    visibility: json.visibility,
+    rainfall: accessRainfall(json),
+    location: json.name }
+
+  update(model, newModel)
+}
+
+const updateModelForecast = function updateModelForecastFromJson (json) {
+  const newModel = {
+    forecastList: json.list.map(item => {
+      return {
+        dateTime: item.dt,
+        weather: item.weather[0].main,
+        icon: item.weather[0].icon}
+    })
+  }
+
+  update(model, newModel)
 }
 
 const switchScale = function updateSwitchState () {
@@ -157,47 +227,13 @@ const switchScale = function updateSwitchState () {
   render()
 }
 
-// Async
-const accessRainfall = function getRainfallFromData (data) {
-  if (data.rain === undefined) {
-    return null
-  }
-
-  return data.rain['3h']
-}
-
-const getWeather = function fetchCurrentWeather (location = 'New York') {
-  const apiKey = 'a97c5e64fc8af7d636f382583d6e14bd'
-  console.log(location)
-  window.fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`)
-    .then(res => res.json())
-    .then(json => updateModel(json))
-    .catch(error => console.log(error))
-}
-
-const updateModel = function updateModelFromJson (json) {
-  const newModel = { currentTemp: json.main.temp,
-    tempMin: json.main.temp_min,
-    tempMax: json.main.temp_max,
-    sunrise: json.sys.sunrise,
-    sunset: json.sys.sunset,
-    pressure: json.main.pressure,
-    visibility: json.visibility,
-    rainfall: accessRainfall(json),
-    location: json.name }
-
-  console.log(json)
-  update(model, newModel)
-  render()
-}
-
 const addSwitchListener = function addSwichScaleEventListener () {
   const slide = document.querySelector('#switch > label > input')
 
   slide.addEventListener('change', switchScale)
 }
 
-const addSearchListener = function addSearchInputEventListener () {
+const addSearchListeners = function addSearchInputEventListener () {
   const input = document.querySelector('.search-bar__input')
 
   input.placeholder = model.location
@@ -238,7 +274,7 @@ const addSubmitListener = function addSearchSubmitEventListener () {
 }
 
 // Run
-addSearchListener()
+addSearchListeners()
 addSubmitListener()
 addSwitchListener()
 getWeather('New York')

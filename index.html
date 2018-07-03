@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" type="text/css" href="reset.css" />
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="slick.css" />
     <title>Weather</title>
 </head>
 <body>
@@ -40,13 +41,11 @@
                 <p>Hourly</p>
                 <p>3 Day</p>
             </div>
-            <div class="forecast__carousel">
-                <span><</span>
-                <div>11am</div>
-                <div>12pm</div>
-                <div>1pm</div>
-                <span>></span>
-            </div>
+            <ul class="forecast__carousel" id="carousel">
+                <li>--</li>
+                <li>--</li>
+                <li>--</li>
+            </ul>
         </section>
         <section class="weather-stats">
             <dl class="weather-stats__stats">
@@ -64,5 +63,7 @@
         </section>
     </main>
     <script src="script.js"></script>
+    <script src="jQuery.min.js"></script>
+    <script src="slick.min.js"></script>
 </body>
 </html>

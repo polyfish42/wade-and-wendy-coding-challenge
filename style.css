@@ -203,6 +203,7 @@ input:checked + .current-weather__scale-slider:before {
 .forecast__carousel {
     margin: 30px auto 0px auto;
     width: 87%;
+    overflow: hidden;
     display: flex;
     justify-content: space-around;
 }
