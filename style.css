@@ -193,12 +193,37 @@ input:checked + .current-weather__scale-slider:before {
     border-top: 1px solid rgb(187,187,187);
 }
 
+.forecast__hourly-daily-toggle {
+    margin: 20px auto 0px auto;
+    width: 50%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.forecast__carousel {
+    margin: 30px auto 0px auto;
+    width: 87%;
+    display: flex;
+    justify-content: space-around;
+}
+
 @media (min-width: 500px) {
     .forecast {
         margin: 0 0 20px 20px;
         border-right: 1px solid rgb(187,187,187);
     }
+
+    .forecast__hourly-daily-toggle {
+        margin: 20px 0px 0px 40px;
+    }
+
+    .forecast__carousel {
+        margin: 30px 0px 0px 0px;
+        display: flex;
+        justify-content: space-around;
+    }
 }
+
 
 /* Weather Stats */
 .weather-stats {
