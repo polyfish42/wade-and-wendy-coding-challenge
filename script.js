@@ -84,10 +84,7 @@ const updateNode = function updateNodeData (selector, cb) {
 }
 
 const render = function renderView () {
-  const currentTemp = document.getElementById('currentTemp')
-
-  currentTemp.innerHTML = `${temperature(model.currentTemp)}&#176;`
-
+  updateNode('currentTemp', formatTemp)
   updateNode('tempMax', high)
   updateNode('tempMin', low)
   updateNode('sunrise', time)
