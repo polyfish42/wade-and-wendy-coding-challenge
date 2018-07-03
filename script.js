@@ -124,19 +124,19 @@ const updateNode = function updateNodeData (selector, cb) {
 }
 
 const updateForecast = function updateForecastNode () {
-  const ul = document.getElementById('carousel')
-  while (ul.firstChild) {
-    ul.removeChild(ul.firstChild)
+  const outerDiv = document.getElementById('carousel')
+  while (outerDiv.firstChild) {
+    outerDiv.removeChild(outerDiv.firstChild)
   }
 
   model.forecastList.forEach(forecast => {
-    const li = document.createElement('li')
+    const div = document.createElement('div')
     // const img = document.createElement('img')
     const p = document.createElement('p')
 
-    li.innerText = forecast.dateTime
-    li.appendChild(p)
-    ul.appendChild(li)
+    p.innerText = 'Hello'
+    div.appendChild(p)
+    outerDiv.appendChild(div)
   })
 }
 
@@ -149,7 +149,7 @@ const render = function renderView () {
   updateNode('pressure', pressure)
   updateNode('visibility', visibility)
   updateNode('rainfall', rainfall)
-  updateForecast()
+//   updateForecast()
 }
 // Async
 const accessRainfall = function getRainfallFromData (data) {

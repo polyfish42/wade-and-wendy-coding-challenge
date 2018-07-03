@@ -193,20 +193,20 @@ input:checked + .current-weather__scale-slider:before {
     border-top: 1px solid rgb(187,187,187);
 }
 
-.forecast__hourly-daily-toggle {
+/* .forecast__hourly-daily-toggle {
     margin: 20px auto 0px auto;
     width: 50%;
     display: flex;
     justify-content: space-around;
-}
-
+} */
+/* 
 .forecast__carousel {
     margin: 30px auto 0px auto;
     width: 87%;
     overflow: hidden;
     display: flex;
     justify-content: space-around;
-}
+} */
 
 @media (min-width: 500px) {
     .forecast {
