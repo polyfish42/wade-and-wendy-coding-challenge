@@ -22,7 +22,9 @@ const model = {
   pressure: null,
   visibility: null,
   rainfall: null,
-  scale: initScale()
+  scale: initScale(),
+  location: 'New York',
+  searchInput: ''
 }
 
 const update = function updateModel (model, newModel) {
@@ -58,6 +60,10 @@ const high = function displayHighTemp (temp) {
 }
 
 const time = function convertSecondsToTimeAndDisplay (time) {
+  if (time === null) {
+    return '--'
+  }
+
   const date = new Date(time * 1000)
   return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
 }
@@ -67,6 +73,10 @@ const round2 = function roundTo2Decimals (num) {
 }
 
 const pressure = function displayPressure (pressure) {
+  if (pressure === null) {
+    return '--'
+  }
+
   switch (model.scale) {
     case Fahrenheit:
       return `${round2(pressure * 0.0295301)}"`
@@ -78,6 +88,10 @@ const pressure = function displayPressure (pressure) {
 }
 
 const visibility = function displayVisibility (meters) {
+  if (meters === null) {
+    return '--'
+  }
+
   switch (model.scale) {
     case Fahrenheit:
       return `${round2(meters * 0.000621371)} Miles`
@@ -154,10 +168,11 @@ const accessRainfall = function getRainfallFromData (data) {
 
 const getWeather = function fetchCurrentWeather (location = 'New York') {
   const apiKey = 'a97c5e64fc8af7d636f382583d6e14bd'
-
+  console.log(location)
   window.fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`)
     .then(res => res.json())
     .then(json => updateModel(json))
+    .catch(error => console.log(error))
 }
 
 const updateModel = function updateModelFromJson (json) {
@@ -168,8 +183,10 @@ const updateModel = function updateModelFromJson (json) {
     sunset: json.sys.sunset,
     pressure: json.main.pressure,
     visibility: json.visibility,
-    rainfall: accessRainfall(json) }
+    rainfall: accessRainfall(json),
+    location: json.name }
 
+  console.log(json)
   update(model, newModel)
   render()
 }
@@ -180,6 +197,48 @@ const addSwitchListener = function addSwichScaleEventListener () {
   slide.addEventListener('change', switchScale)
 }
 
+const addSearchListener = function addSearchInputEventListener () {
+  const input = document.querySelector('.search-bar__input')
+
+  input.placeholder = model.location
+
+  input.onchange = (e) => {
+    model.searchInput = input.value
+  }
+
+  input.onfocus = (e) => {
+    e.target.placeholder = ''
+  }
+
+  input.onblur = (e) => {
+    e.target.placeholder = model.location
+  }
+}
+
+const searchInput = function getAndClearSearchInput () {
+  const input = model.searchInput
+  model.location = input
+  model.searchInput = ''
+
+  const inputNode = document.querySelector('.search-bar__input')
+  inputNode.value = ''
+  inputNode.blur()
+
+  return input
+}
+
+const addSubmitListener = function addSearchSubmitEventListener () {
+  const form = document.querySelector('form.search-bar__search')
+
+  form.onsubmit = (e) => {
+    e.preventDefault()
+
+    getWeather(searchInput())
+  }
+}
+
 // Run
+addSearchListener()
+addSubmitListener()
 addSwitchListener()
-getWeather()
+getWeather('New York')
