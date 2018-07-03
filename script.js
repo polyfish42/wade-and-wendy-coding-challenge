@@ -1,7 +1,17 @@
 // Model
 
-const Fahrenheit = 'fahrenheit'
-const Celsius = 'celsius'
+const Fahrenheit = 'Fahrenheit'
+const Celsius = 'Celsius'
+
+const initScale = function getInitialScale () {
+  const slide = document.querySelector('#switch > label > input')
+
+  if (slide.checked) {
+    return Fahrenheit
+  } else {
+    return Celsius
+  }
+}
 
 const model = {
   currentTemp: null,
@@ -12,7 +22,7 @@ const model = {
   pressure: null,
   visibility: null,
   rainfall: null,
-  scale: Fahrenheit
+  scale: initScale()
 }
 
 const update = function updateModel (model, newModel) {
@@ -52,22 +62,37 @@ const time = function convertSecondsToTimeAndDisplay (time) {
   return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
 }
 
+const round2 = function roundTo2Decimals (num) {
+  return Math.round(num * 100) / 100
+}
+
 const pressure = function displayPressure (pressure) {
-  return `${Math.round(pressure * 0.0295301 * 100) / 100}"`
+  switch (model.scale) {
+    case Fahrenheit:
+      return `${round2(pressure * 0.0295301)}"`
+    case Celsius:
+      return `${round2(pressure * 0.75006)} mm`
+    default:
+      return '--'
+  }
 }
 
 const visibility = function displayVisibility (meters) {
   switch (model.scale) {
     case Fahrenheit:
-      return `${Math.round(meters * 0.000621371 * 100) / 100} Miles`
+      return `${round2(meters * 0.000621371)} Miles`
     case Celsius:
-      return `${meters} Meters`
+      return `${round2(meters / 1000)} km`
     default:
       return '--'
   }
 }
 
 const rainfall = function displayRainfall (mm) {
+  if (mm === null) {
+    mm = 0
+  }
+
   switch (model.scale) {
     case Fahrenheit:
       return `${Math.round(mm * 0.0393701 * 100) / 100}"`
@@ -94,6 +119,30 @@ const render = function renderView () {
   updateNode('rainfall', rainfall)
 }
 
+const switchScale = function updateSwitchState () {
+  const slide = document.querySelector('#switch > label > input')
+  const text = document.querySelector('#switch > p')
+
+  switch (model.scale) {
+    case Fahrenheit:
+      model.scale = Celsius
+      slide.checked = false
+      text.innerText = Celsius
+      break
+    case Celsius:
+      model.scale = Fahrenheit
+      slide.checked = true
+      text.innerText = Fahrenheit
+      break
+    default:
+      model.scale = Fahrenheit
+      slide.checked = true
+      text.innerText = Fahrenheit
+  }
+
+  render()
+}
+
 // Async
 const accessRainfall = function getRainfallFromData (data) {
   if (data.rain === undefined) {
@@ -108,21 +157,29 @@ const getWeather = function fetchCurrentWeather (location = 'New York') {
 
   window.fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`)
     .then(res => res.json())
-    .then(data => {
-      const newModel = { currentTemp: data.main.temp,
-        tempMin: data.main.temp_min,
-        tempMax: data.main.temp_max,
-        sunrise: data.sys.sunrise,
-        sunset: data.sys.sunset,
-        pressure: data.main.pressure,
-        visibility: data.visibility,
-        rainfall: accessRainfall(data) }
+    .then(json => updateModel(json))
+}
 
-      console.log(data)
-      update(model, newModel)
-      render()
-    })
+const updateModel = function updateModelFromJson (json) {
+  const newModel = { currentTemp: json.main.temp,
+    tempMin: json.main.temp_min,
+    tempMax: json.main.temp_max,
+    sunrise: json.sys.sunrise,
+    sunset: json.sys.sunset,
+    pressure: json.main.pressure,
+    visibility: json.visibility,
+    rainfall: accessRainfall(json) }
+
+  update(model, newModel)
+  render()
+}
+
+const addSwitchListener = function addSwichScaleEventListener () {
+  const slide = document.querySelector('#switch > label > input')
+
+  slide.addEventListener('change', switchScale)
 }
 
 // Run
+addSwitchListener()
 getWeather()
