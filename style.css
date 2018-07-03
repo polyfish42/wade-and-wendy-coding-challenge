@@ -58,7 +58,7 @@ main {
 
 .search-bar__magnifying-glass {
     position: absolute;
-    top: 35px;
+    top: 40px;
 }
 
 .search-bar__input {
@@ -79,7 +79,7 @@ main {
 
 @media (min-width: 500px) {
     .search-bar__magnifying-glass {
-        top: 45px;
+        top: 50px;
     }
 }
 
