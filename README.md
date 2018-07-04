@@ -1,6 +1,6 @@
 # Wade & Wendy Coding Challenge
 
 ## Todo
-- [ ] Implement **mobile** spec
-- [ ] Implement **desktop** spec
-- [ ] Integrate open weather API
+- [X] Implement **mobile** spec
+- [X] Implement **desktop** spec
+- [X] Integrate open weather API
