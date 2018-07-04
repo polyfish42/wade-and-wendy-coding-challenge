@@ -62,7 +62,7 @@ main {
 }
 
 .search-bar__input {
-    background: rgb(0,0,0,0);
+    background: rgba(0,0,0,0);
     color: white;
     border: none;
     outline: none;
@@ -236,6 +236,8 @@ input:checked + .current-weather__scale-slider:before {
     border: none;
     outline: none;
     cursor: pointer;
+    color: black;
+    background:white;
 }
 
 
