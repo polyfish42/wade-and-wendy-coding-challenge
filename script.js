@@ -17,6 +17,7 @@ const initScale = function getInitialScale () {
 
 const model = {
   currentTemp: null,
+  currentTempIcon: null,
   tempMin: null,
   tempMax: null,
   sunrise: null,
@@ -37,6 +38,11 @@ const update = function updateModel (model, newModel) {
 }
 
 // Update View
+const updateTempIcon = function updateMainTempIcon () {
+  const icon = document.querySelector('.current-weather__icon')
+  icon.src = `http://openweathermap.org/img/w/${model.currentTempIcon}.png`
+}
+
 const temperature = function convertKelvinToTempurature (kelvins) {
   if (kelvins === null) {
     return '--'
@@ -190,6 +196,7 @@ const updateForecast = function updateForecastNode () {
 }
 
 const render = function renderView () {
+  updateTempIcon()
   updateNode('currentTemp', formatTemp)
   updateNode('tempMax', high)
   updateNode('tempMin', low)
@@ -229,6 +236,7 @@ const getWeather = function fetchCurrentWeather (location = 'New York') {
 
 const updateModelWeather = function updateModelWeatherFromJson (json) {
   const newModel = { currentTemp: json.main.temp,
+    currentTempIcon: json.weather[0].icon,
     tempMin: json.main.temp_min,
     tempMax: json.main.temp_max,
     sunrise: json.sys.sunrise,

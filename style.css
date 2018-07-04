@@ -97,6 +97,16 @@ main {
     grid-template-rows: 25px 25px;
 }
 
+.current-weather__main {
+    display: flex;
+}
+
+.current-weather__icon {
+    height: 100px;
+    width: 100px;
+    align-self: center;
+}
+
 .current-weather__high-low-bar {
     width: 100%;
     margin: 0px 4px;
@@ -202,7 +212,7 @@ input:checked + .current-weather__scale-slider:before {
 
 
 .forecast__carousel {
-    margin: 0px auto;
+    margin: 30px auto;
     width: 87%;
     display: flex;
     justify-content: space-around;
