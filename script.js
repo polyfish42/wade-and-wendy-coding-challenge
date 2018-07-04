@@ -18,6 +18,7 @@ const initScale = function getInitialScale () {
 const model = {
   currentTemp: null,
   currentTempIcon: null,
+  time: new Date(),
   tempMin: null,
   tempMax: null,
   sunrise: null,
@@ -38,6 +39,11 @@ const update = function updateModel (model, newModel) {
 }
 
 // Update View
+const updateTimeNode = function updateLatestTimeNode () {
+  const node = document.querySelector('.current-weather__info')
+  node.innerHTML = `${model.location} as of ${model.time.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}`
+}
+
 const updateTempIcon = function updateMainTempIcon () {
   const icon = document.querySelector('.current-weather__icon')
   icon.src = `http://openweathermap.org/img/w/${model.currentTempIcon}.png`
@@ -196,6 +202,7 @@ const updateForecast = function updateForecastNode () {
 }
 
 const render = function renderView () {
+  updateTimeNode()
   updateTempIcon()
   updateNode('currentTemp', formatTemp)
   updateNode('tempMax', high)
@@ -219,6 +226,8 @@ const accessRainfall = function getRainfallFromData (data) {
 }
 
 const getWeather = function fetchCurrentWeather (location = 'New York') {
+  update(model, {time: new Date()})
+
   const apiKey = 'a97c5e64fc8af7d636f382583d6e14bd'
 
   const weatherPromise = window.fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`)

@@ -222,11 +222,14 @@ input:checked + .current-weather__scale-slider:before {
 
 .forecast__hourly, .forecast__daily {
     cursor: pointer;
+    color: rgb(187,187,187)
 }
 
 .current-mode {
     border-bottom: 1px solid black;
     padding-bottom: 2px;
+    font-weight: bold;
+    color: black;
 }
 
 .forecast__prev, .forecast__next {
