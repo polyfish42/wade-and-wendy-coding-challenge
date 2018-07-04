@@ -147,7 +147,7 @@ main {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color:rgb(73,144,226);
     -webkit-transition: .4s;
     transition: .4s;
 }
@@ -163,10 +163,6 @@ main {
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
-}
-
-input:checked + .current-weather__scale-slider {
-    background-color: rgb(73,144,226);
 }
 
 input:checked + .current-weather__scale-slider:before {
