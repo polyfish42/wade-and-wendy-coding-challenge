@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" type="text/css" href="reset.css" />
     <link rel="stylesheet" type="text/css" href="style.css" />
+
     <title>Weather</title>
 </head>
 <body>
@@ -37,13 +38,17 @@
         </section>
         <section class="forecast">
             <div class="forecast__hourly-daily-toggle">
-                <p>Hourly</p>
-                <p>3 Day</p>
+                <p class="forecast__hourly">Hourly</p>
+                <p class="forecast__daily">3 Day</p>
             </div>
-            <div class="forecast__carousel" id="carousel">
-                <div>--</div>
-                <div>--</div>
-                <div>--</div>
+            <div class="forecast__carousel">
+                <button class="forecast__prev"><</button>
+                <div id="carousel">
+                    <div>--</div>
+                    <div>--</div>
+                    <div>--</div>
+                </div>
+                <button class="forecast__next">></button>
             </div>
         </section>
         <section class="weather-stats">

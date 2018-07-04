@@ -2,6 +2,8 @@
 
 const Fahrenheit = 'Fahrenheit'
 const Celsius = 'Celsius'
+const Hourly = 'Hourly'
+const Daily = 'Daily'
 
 const initScale = function getInitialScale () {
   const slide = document.querySelector('#switch > label > input')
@@ -25,7 +27,9 @@ const model = {
   scale: initScale(),
   location: 'New York',
   searchInput: '',
-  forecastList: []
+  forecastList: {prev: [], curr: [], next: []},
+  dailyList: {prev: [], curr: [], next: []},
+  mode: Hourly
 }
 
 const update = function updateModel (model, newModel) {
@@ -67,6 +71,15 @@ const time = function convertSecondsToTimeAndDisplay (time) {
 
   const date = new Date(time * 1000)
   return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+}
+
+const shortTime = function convertSecondsToHour (time) {
+  if (time === null) {
+    return '--'
+  }
+
+  const date = new Date(time * 1000)
+  return date.toLocaleTimeString([], {hour: '2-digit'})
 }
 
 const round2 = function roundTo2Decimals (num) {
@@ -123,21 +136,57 @@ const updateNode = function updateNodeData (selector, cb) {
   node.innerHTML = cb(model[selector])
 }
 
+const updateForecastMode = function updateForecastModeToggle () {
+  const hourly = document.querySelector('.forecast__hourly')
+  const daily = document.querySelector('.forecast__daily')
+
+  switch (model.mode) {
+    case Hourly:
+      hourly.classList.add('current-mode')
+      daily.classList.remove('current-mode')
+      break
+    case Daily:
+      hourly.classList.remove('current-mode')
+      daily.classList.add('current-mode')
+      break
+    default:
+      return undefined
+  }
+}
+
+const displayForecast = function displayForecastDivs (forecast, outerDiv, text) {
+  const div = document.createElement('div')
+  const img = document.createElement('img')
+  const p = document.createElement('p')
+
+  img.src = `http://openweathermap.org/img/w/${forecast.icon}.png`
+  div.appendChild(img)
+  p.innerText = text
+  p.style.textAlign = 'center'
+  div.appendChild(p)
+  outerDiv.appendChild(div)
+}
+
 const updateForecast = function updateForecastNode () {
   const outerDiv = document.getElementById('carousel')
   while (outerDiv.firstChild) {
     outerDiv.removeChild(outerDiv.firstChild)
   }
 
-  model.forecastList.forEach(forecast => {
-    const div = document.createElement('div')
-    // const img = document.createElement('img')
-    const p = document.createElement('p')
-
-    p.innerText = 'Hello'
-    div.appendChild(p)
-    outerDiv.appendChild(div)
-  })
+  switch (model.mode) {
+    case Hourly:
+      model.forecastList.curr.forEach(forecast => {
+        displayForecast(forecast, outerDiv, shortTime(forecast.dateTime))
+      })
+      break
+    case Daily:
+      model.dailyList.curr.forEach(forecast => {
+        displayForecast(forecast, outerDiv, forecast.weather)
+      })
+      break
+    default:
+      return undefined
+  }
 }
 
 const render = function renderView () {
@@ -149,8 +198,10 @@ const render = function renderView () {
   updateNode('pressure', pressure)
   updateNode('visibility', visibility)
   updateNode('rainfall', rainfall)
-//   updateForecast()
+  updateForecastMode()
+  updateForecast()
 }
+
 // Async
 const accessRainfall = function getRainfallFromData (data) {
   if (data.rain === undefined) {
@@ -190,17 +241,48 @@ const updateModelWeather = function updateModelWeatherFromJson (json) {
   update(model, newModel)
 }
 
-const updateModelForecast = function updateModelForecastFromJson (json) {
-  const newModel = {
-    forecastList: json.list.map(item => {
-      return {
-        dateTime: item.dt,
-        weather: item.weather[0].main,
-        icon: item.weather[0].icon}
-    })
+const updateForecastList = function updateModelForecastList (list) {
+  const forecastList = {prev: [], curr: [], next: []}
+
+  for (let i = 0; i < list.length; i++) {
+    if (i < 3) {
+      forecastList.curr.push(list[i])
+    } else {
+      forecastList.next.push(list[i])
+    }
   }
 
-  update(model, newModel)
+  update(model, {forecastList})
+}
+
+const updateDailyList = function updateModelDailyList (list) {
+  const newList = list.filter(el => {
+    return shortTime(el.dateTime) === `11 AM`
+  })
+
+  const dailyList = {prev: [], curr: [], next: []}
+
+  for (let i = 0; i < newList.length; i++) {
+    if (i < 3) {
+      dailyList.curr.push(newList[i])
+    } else {
+      dailyList.next.push(newList[i])
+    }
+  }
+
+  update(model, {dailyList})
+}
+
+const updateModelForecast = function updateModelForecastFromJson (json) {
+  const newList = json.list.map(item => {
+    return {
+      dateTime: item.dt,
+      weather: item.weather[0].main,
+      icon: item.weather[0].icon}
+  })
+
+  updateForecastList(newList)
+  updateDailyList(newList)
 }
 
 const switchScale = function updateSwitchState () {
@@ -273,8 +355,90 @@ const addSubmitListener = function addSearchSubmitEventListener () {
   }
 }
 
+const addModeListeners = function addForecastModeEventListeners () {
+  const hourly = document.querySelector('.forecast__hourly')
+  const daily = document.querySelector('.forecast__daily')
+
+  hourly.onclick = () => {
+    model.mode = Hourly
+    render()
+  }
+
+  daily.onclick = () => {
+    model.mode = Daily
+    render()
+  }
+}
+
+const prevForecasts = function showPrevForecasts () {
+  let list
+  switch (model.mode) {
+    case Hourly:
+      list = 'forecastList'
+      break
+    case Daily:
+      list = 'dailyList'
+      break
+  }
+
+  const prev = model[list].prev
+  const curr = model[list].curr
+  const next = model[list].next
+
+  if (prev.length === 0) {
+    return
+  }
+
+  model[list].next = [...curr, ...next]
+  model[list].curr = [...prev.slice(prev.length - 3)]
+  model[list].prev = [...prev.slice(0, prev.length - 3)]
+
+  render()
+}
+
+const nextForecasts = function showNextForecasts () {
+  let list
+  switch (model.mode) {
+    case Hourly:
+      list = 'forecastList'
+      break
+    case Daily:
+      list = 'dailyList'
+      break
+  }
+
+  const prev = model[list].prev
+  const curr = model[list].curr
+  const next = model[list].next
+
+  if (next.length === 0) {
+    return
+  }
+
+  model[list].prev = [...prev, ...curr]
+  model[list].curr = [...next.slice(0, 3)]
+  model[list].next = [...next.slice(3)]
+
+  render()
+}
+
+const addForecastListeners = function addPrevAndNextForecastListeners () {
+  const prev = document.querySelector('.forecast__prev')
+  const next = document.querySelector('.forecast__next')
+
+  prev.onclick = () => {
+    prevForecasts()
+  }
+
+  next.onclick = () => {
+    nextForecasts()
+  }
+}
+
 // Run
+getWeather('New York')
 addSearchListeners()
 addSubmitListener()
 addSwitchListener()
-getWeather('New York')
+addModeListeners()
+addForecastListeners()
