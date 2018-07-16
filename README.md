@@ -1,5 +1,5 @@
 # Wade & Wendy Coding Challenge
-[Live](https://www.jakebrady.me/wade-and-wendy-coding-challenge/)
+[Live](https://www.jakebrady.me/weather-app/)
 ## Todo
 - [X] Implement **mobile** spec
 - [X] Implement **desktop** spec
