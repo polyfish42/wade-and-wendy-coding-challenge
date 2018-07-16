@@ -1,6 +1,4 @@
-# Wade & Wendy Coding Challenge
-[Live](https://www.jakebrady.me/weather-app/)
-## Todo
-- [X] Implement **mobile** spec
-- [X] Implement **desktop** spec
-- [X] Integrate open weather API
+# Weather App
+[Live Site](https://www.jakebrady.me/weather-app/)
+
+Weather app built with Vanilla JavaScript and openweather API.
